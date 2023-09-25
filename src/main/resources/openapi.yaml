@@ -1,0 +1,191 @@
+openapi: 3.0.3
+info:
+  contact:
+    email: apiteam@swagger.io
+  description: This is our spring boot REST server for our document management system
+    - SWKOM
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Paperless_Niyazmand_Royong_Ziering
+  version: 1.0.11
+servers:
+- url: http://localhost:8080
+tags:
+- description: Everything about documents
+  name: documents
+paths:
+  /documents:
+    get:
+      description: Get all documents
+      operationId: findDocuments
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Documents'
+                type: array
+          description: successful operation
+        "400":
+          description: Bad request
+      summary: get all documents
+      tags:
+      - documents
+      x-accepts: application/json
+      x-tags:
+      - tag: documents
+    post:
+      description: upload a new documents
+      operationId: uploadDocument
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Documents'
+        description: upload a new documents
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Documents'
+          description: Successful operation
+        "405":
+          description: Invalid input
+      summary: upload a new documents
+      tags:
+      - documents
+      x-content-type: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: documents
+    put:
+      description: update a document
+      operationId: updateDocument
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Documents'
+        description: update a document
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Documents'
+          description: Successful operation
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Document not found
+        "405":
+          description: Validation exception
+      summary: update a document
+      tags:
+      - documents
+      x-content-type: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: documents
+  /documents/findByName/{name}:
+    delete:
+      description: This can only be done by the logged in user.
+      operationId: deleteDocuments
+      parameters:
+      - description: The name that needs to be deleted
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "400":
+          description: Invalid name supplied
+        "404":
+          description: Document not found
+      summary: Delete documents
+      tags:
+      - documents
+      x-accepts: application/json
+      x-tags:
+      - tag: documents
+    get:
+      description: Multiple names can be provided with comma separated strings
+      operationId: findDocumentsByName
+      parameters:
+      - description: Names that need to be considered for filter
+        explode: true
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: successful operation
+        "400":
+          description: Invalid name
+      summary: Finds Documents by name
+      tags:
+      - documents
+      x-accepts: application/json
+      x-tags:
+      - tag: documents
+components:
+  requestBodies:
+    Documents:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Documents'
+      description: Document that is uploaded
+  schemas:
+    Documents:
+      example:
+        metadata: "{}"
+        docType: pdf
+        name: Script_1
+        id: 10
+        content: Chapter1 ...
+      properties:
+        id:
+          example: 10
+          format: int64
+          type: integer
+        name:
+          example: Script_1
+          type: string
+        content:
+          example: Chapter1 ...
+          type: string
+        docType:
+          example: pdf
+          type: string
+        metadata:
+          type: object
+      type: object
+    ApiResponse:
+      properties:
+        code:
+          format: int32
+          type: integer
+        type:
+          type: string
+        message:
+          type: string
+      type: object
+      xml:
+        name: '##default'
