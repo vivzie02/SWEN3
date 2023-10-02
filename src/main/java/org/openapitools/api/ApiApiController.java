@@ -1,6 +1,15 @@
 package org.openapitools.api;
 
-import org.openapitools.model.Documents;
+import org.openapitools.model.Correspondent;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.openapitools.model.DocTag;
+import org.openapitools.model.Document;
+import org.openapitools.model.DocumentType;
+import org.openapitools.model.NewCorrespondent;
+import org.openapitools.model.NewDocumentType;
+import org.openapitools.model.NewTag;
+import java.time.OffsetDateTime;
+import org.openapitools.model.UserInfo;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +35,15 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2023-09-24T20:15:11.432209Z[Etc/UTC]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2023-10-02T15:01:24.511843Z[Etc/UTC]")
 @Controller
-@RequestMapping("${openapi.paperlessNiyazmandRoyongZiering.base-path:}")
-public class DocumentsApiController implements DocumentsApi {
+@RequestMapping("${openapi.mockServer.base-path:}")
+public class ApiApiController implements ApiApi {
 
     private final NativeWebRequest request;
 
     @Autowired
-    public DocumentsApiController(NativeWebRequest request) {
+    public ApiApiController(NativeWebRequest request) {
         this.request = request;
     }
 
