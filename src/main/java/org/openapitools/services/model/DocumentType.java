@@ -1,30 +1,21 @@
-package org.openapitools.model;
+package org.openapitools.services.model;
 
-import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import java.time.OffsetDateTime;
+
 import java.util.Arrays;
 import org.openapitools.jackson.nullable.JsonNullable;
-import org.springframework.format.annotation.DateTimeFormat;
-import java.util.NoSuchElementException;
-import org.openapitools.jackson.nullable.JsonNullable;
-import java.time.OffsetDateTime;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 
-import java.util.*;
 import javax.annotation.Generated;
 
 /**
- * Correspondent
+ * DocumentType
  */
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2023-10-02T15:01:24.511843Z[Etc/UTC]")
-public class Correspondent {
+public class DocumentType {
 
   private Long id;
 
@@ -40,10 +31,7 @@ public class Correspondent {
 
   private Long documentCount;
 
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  private OffsetDateTime lastCorrespondence;
-
-  public Correspondent id(Long id) {
+  public DocumentType id(Long id) {
     this.id = id;
     return this;
   }
@@ -63,7 +51,7 @@ public class Correspondent {
     this.id = id;
   }
 
-  public Correspondent slug(String slug) {
+  public DocumentType slug(String slug) {
     this.slug = JsonNullable.of(slug);
     return this;
   }
@@ -83,7 +71,7 @@ public class Correspondent {
     this.slug = slug;
   }
 
-  public Correspondent name(String name) {
+  public DocumentType name(String name) {
     this.name = JsonNullable.of(name);
     return this;
   }
@@ -103,7 +91,7 @@ public class Correspondent {
     this.name = name;
   }
 
-  public Correspondent match(String match) {
+  public DocumentType match(String match) {
     this.match = JsonNullable.of(match);
     return this;
   }
@@ -123,7 +111,7 @@ public class Correspondent {
     this.match = match;
   }
 
-  public Correspondent matchingAlgorithm(Long matchingAlgorithm) {
+  public DocumentType matchingAlgorithm(Long matchingAlgorithm) {
     this.matchingAlgorithm = matchingAlgorithm;
     return this;
   }
@@ -143,7 +131,7 @@ public class Correspondent {
     this.matchingAlgorithm = matchingAlgorithm;
   }
 
-  public Correspondent isInsensitive(Boolean isInsensitive) {
+  public DocumentType isInsensitive(Boolean isInsensitive) {
     this.isInsensitive = isInsensitive;
     return this;
   }
@@ -163,7 +151,7 @@ public class Correspondent {
     this.isInsensitive = isInsensitive;
   }
 
-  public Correspondent documentCount(Long documentCount) {
+  public DocumentType documentCount(Long documentCount) {
     this.documentCount = documentCount;
     return this;
   }
@@ -183,26 +171,6 @@ public class Correspondent {
     this.documentCount = documentCount;
   }
 
-  public Correspondent lastCorrespondence(OffsetDateTime lastCorrespondence) {
-    this.lastCorrespondence = lastCorrespondence;
-    return this;
-  }
-
-  /**
-   * Get lastCorrespondence
-   * @return lastCorrespondence
-  */
-  @Valid 
-  @Schema(name = "last_correspondence", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("last_correspondence")
-  public OffsetDateTime getLastCorrespondence() {
-    return lastCorrespondence;
-  }
-
-  public void setLastCorrespondence(OffsetDateTime lastCorrespondence) {
-    this.lastCorrespondence = lastCorrespondence;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -211,15 +179,14 @@ public class Correspondent {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Correspondent correspondent = (Correspondent) o;
-    return Objects.equals(this.id, correspondent.id) &&
-        equalsNullable(this.slug, correspondent.slug) &&
-        equalsNullable(this.name, correspondent.name) &&
-        equalsNullable(this.match, correspondent.match) &&
-        Objects.equals(this.matchingAlgorithm, correspondent.matchingAlgorithm) &&
-        Objects.equals(this.isInsensitive, correspondent.isInsensitive) &&
-        Objects.equals(this.documentCount, correspondent.documentCount) &&
-        Objects.equals(this.lastCorrespondence, correspondent.lastCorrespondence);
+    DocumentType documentType = (DocumentType) o;
+    return Objects.equals(this.id, documentType.id) &&
+        equalsNullable(this.slug, documentType.slug) &&
+        equalsNullable(this.name, documentType.name) &&
+        equalsNullable(this.match, documentType.match) &&
+        Objects.equals(this.matchingAlgorithm, documentType.matchingAlgorithm) &&
+        Objects.equals(this.isInsensitive, documentType.isInsensitive) &&
+        Objects.equals(this.documentCount, documentType.documentCount);
   }
 
   private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
@@ -228,7 +195,7 @@ public class Correspondent {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, hashCodeNullable(slug), hashCodeNullable(name), hashCodeNullable(match), matchingAlgorithm, isInsensitive, documentCount, lastCorrespondence);
+    return Objects.hash(id, hashCodeNullable(slug), hashCodeNullable(name), hashCodeNullable(match), matchingAlgorithm, isInsensitive, documentCount);
   }
 
   private static <T> int hashCodeNullable(JsonNullable<T> a) {
@@ -241,7 +208,7 @@ public class Correspondent {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Correspondent {\n");
+    sb.append("class DocumentType {\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    slug: ").append(toIndentedString(slug)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
@@ -249,7 +216,6 @@ public class Correspondent {
     sb.append("    matchingAlgorithm: ").append(toIndentedString(matchingAlgorithm)).append("\n");
     sb.append("    isInsensitive: ").append(toIndentedString(isInsensitive)).append("\n");
     sb.append("    documentCount: ").append(toIndentedString(documentCount)).append("\n");
-    sb.append("    lastCorrespondence: ").append(toIndentedString(lastCorrespondence)).append("\n");
     sb.append("}");
     return sb.toString();
   }
