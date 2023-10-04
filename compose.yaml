@@ -1,0 +1,10 @@
+services: 
+    backend:
+        image: swen3-backend
+        ports: 
+          - "8080:8080"
+            
+    frontend: 
+        image: swen3-frontend
+        ports: 
+          - "80:80"
