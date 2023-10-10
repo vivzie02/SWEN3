@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  frontend:
+    image: swen3-frontend:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  backend:
+    image: swen3-backend:latest
+    ports:
+      - "8080:8080"
