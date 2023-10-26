@@ -1,17 +1,20 @@
 package org.openapitools.persistence.entities;
 
+import java.time.OffsetDateTime;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.time.OffsetDateTime;
 
 
 @Data
 @Entity
 public class CorrespondentEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY,generator = "native")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY,generator = "native")
 
     private Long id;
 
