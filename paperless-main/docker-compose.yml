@@ -16,7 +16,7 @@ services:
     image: postgres:latest
     environment:
       POSTGRES_DB: swen3-db
-      POSTGRES_USER: root
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     volumes:
       - postgres_data:/var/lib/postgresql/data

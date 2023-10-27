@@ -1,21 +1,22 @@
 package org.openapitools.services;
 
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.hibernate.type.OffsetDateTimeType;
+import org.apache.logging.log4j.LogManager;
 import org.openapitools.model.Document;
 import org.openapitools.persistence.entities.DocumentEntity;
 import org.openapitools.persistence.repositories.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.apache.logging.log4j.Logger;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.time.OffsetDateTime;
+
 import java.util.ArrayList;
 
 @Service
 public class DocumentServiceImpl implements DocumentService{
     @Autowired
     DocumentRepository documentRepository;
+
+    protected static final Logger logger = LogManager.getLogger();
 
     @Override
     public void saveDocument(Document document){
@@ -27,8 +28,10 @@ public class DocumentServiceImpl implements DocumentService{
                 .storagePath(1)
                 .title("Test123")
                 .content("cont")
-                .tags(new ArrayList<Integer>())
+                .tags(new ArrayList<>())
                 .build();
+
+        logger.info("saving document to database");
         documentRepository.save(documentEntity);
     }
 }
