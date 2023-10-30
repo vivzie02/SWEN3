@@ -1,5 +1,6 @@
 package org.openapitools.api;
 
+import org.openapitools.jackson.nullable.JsonNullable;
 import org.openapitools.model.*;
 import org.openapitools.services.DocumentService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -47,7 +48,16 @@ public class ApiApiController implements ApiApi {
 
     @Override
     public ResponseEntity<Void> uploadDocument(String title, OffsetDateTime created, Integer documentType, List<Integer> tags, Integer correspondent, List<MultipartFile> document){
-        Document document1 = new Document();
+        //Document document1 = new Document();
+        Document document1 = Document.builder()
+                .title(JsonNullable.of(title))
+                .created(created)
+                .documentType(JsonNullable.of(documentType))
+                .tags(JsonNullable.of(tags))
+                .correspondent(JsonNullable.of(correspondent))
+                // ... set other properties as needed
+                .build();
+
 
         documentService.saveDocument(document1);
 
