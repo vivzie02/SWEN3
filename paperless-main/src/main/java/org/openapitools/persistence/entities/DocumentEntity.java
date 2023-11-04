@@ -1,5 +1,8 @@
 package org.openapitools.persistence.entities;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -9,6 +12,9 @@ import java.util.List;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class DocumentEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY,generator = "native")
     @Column

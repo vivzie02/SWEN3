@@ -1,13 +1,49 @@
 package org.openapitools.services.mapper;
 
-import org.mapstruct.Mapper;
+import org.openapitools.jackson.nullable.JsonNullable;
+import org.openapitools.model.Correspondent;
 import org.openapitools.persistence.entities.CorrespondentEntity;
-import org.openapitools.persistence.entities.DocTagEntity;
-import org.openapitools.services.model.Correspondent;
-import org.openapitools.services.model.DocTag;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 @Mapper
 public interface CorrespondentMapper {
-    Correspondent EntityToDto(CorrespondentEntity correspondentEntity);
-    CorrespondentEntity dtoToDEntity(Correspondent correspondent);
+
+    CorrespondentMapper INSTANCE = Mappers.getMapper(CorrespondentMapper.class);
+
+    CorrespondentEntity toEntity(Correspondent dto);
+
+    Correspondent toDto(CorrespondentEntity entity);
+
+    // From Integer to JsonNullable<Integer>
+    default JsonNullable<Integer> integerToJsonNullable(Integer value) {
+        return JsonNullable.of(value);
+    }
+
+    // From String to JsonNullable<String>
+    default JsonNullable<String> stringToJsonNullable(String value) {
+        return JsonNullable.of(value);
+    }
+
+    // From List<Integer> to JsonNullable<List<Integer>>
+    default JsonNullable<List<Integer>> listToJsonNullable(List<Integer> value) {
+        return JsonNullable.of(value);
+    }
+
+    // From JsonNullable<Integer> to Integer
+    default Integer jsonNullableToInteger(JsonNullable<Integer> value) {
+        return value.orElse(null);
+    }
+
+    // From JsonNullable<String> to String
+    default String jsonNullableToString(JsonNullable<String> value) {
+        return value.orElse(null);
+    }
+
+    // From JsonNullable<List<Integer>> to List<Integer>
+    default List<Integer> jsonNullableToList(JsonNullable<List<Integer>> value) {
+        return value.orElse(null);
+    }
 }
