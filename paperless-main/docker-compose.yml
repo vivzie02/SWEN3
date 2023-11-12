@@ -11,7 +11,7 @@ services:
     build:
       dockerfile: Dockerfile
     ports:
-      - "8088:8088"
+      - "8088:8088"               #vll noch auf 8081:8081 ändern? -> siehe Architecture
   postgres:
     image: postgres:latest
     environment:
@@ -32,7 +32,7 @@ services:
     command: server /data
     ports:
       - "9000:9000" # MinIO API
-      - "9001:9001" # MinIO Console
+      - "9090:9090" # MinIO Console
   rabbitmq:
     image: "rabbitmq:3-management"
     hostname: "rabbitmq"
@@ -41,7 +41,7 @@ services:
       RABBITMQ_DEFAULT_PASS: password  # Change to a secure password
     ports:
       - "5672:5672" # RabbitMQ server
-      - "15672:15672" # RabbitMQ management
+      - "9093:9093" # RabbitMQ management
 
 volumes:
   postgres_data:
