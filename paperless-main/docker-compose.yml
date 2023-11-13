@@ -41,7 +41,7 @@ services:
       RABBITMQ_DEFAULT_PASS: password  # Change to a secure password
     ports:
       - "5672:5672" # RabbitMQ server
-      - "9093:9093" # RabbitMQ management
+      - "15672:15672" # RabbitMQ management
 
 volumes:
   postgres_data:

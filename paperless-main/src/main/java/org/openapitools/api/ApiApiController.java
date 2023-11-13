@@ -1,8 +1,10 @@
 package org.openapitools.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.openapitools.model.*;
 import org.openapitools.services.DocumentService;
+import org.openapitools.services.RabbitMQSenderService;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.OffsetDateTime;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.context.request.NativeWebRequest;
+import com.fasterxml.jackson.databind.ObjectMapper; // Import ObjectMapper
+
 
 import javax.validation.constraints.*;
 import javax.validation.Valid;
@@ -41,6 +45,11 @@ public class ApiApiController implements ApiApi {
     @Autowired
     public DocumentService documentService;
 
+
+    @Autowired
+    private RabbitMQSenderService rabbitMQSenderService;
+
+
     @Override
     public Optional<NativeWebRequest> getRequest() {
         return Optional.ofNullable(request);
@@ -60,6 +69,17 @@ public class ApiApiController implements ApiApi {
 
 
         documentService.saveDocument(document1);
+
+
+        // Convert document1 to JSON String
+        /*ObjectMapper mapper = new ObjectMapper();
+        try {
+            String jsonDocument = mapper.writeValueAsString(document1);
+            rabbitMQSenderService.sendDocumentMessage(jsonDocument);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            // Handle the exception (e.g., return an error response)
+        }*/
 
         return ResponseEntity.ok().build();
     }
