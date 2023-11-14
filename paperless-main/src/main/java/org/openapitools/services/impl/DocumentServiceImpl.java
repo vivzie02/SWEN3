@@ -1,9 +1,10 @@
-package org.openapitools.services;
+package org.openapitools.services.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.openapitools.model.Document;
 import org.openapitools.persistence.entities.DocumentEntity;
 import org.openapitools.persistence.repositories.DocumentRepository;
+import org.openapitools.services.DocumentService;
 import org.openapitools.services.mapper.DocumentMapper;
 import org.openapitools.services.mapper.DocumentMapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 
 @Service
-public class DocumentServiceImpl implements DocumentService{
+public class DocumentServiceImpl implements DocumentService {
     @Autowired
     DocumentRepository documentRepository;
 

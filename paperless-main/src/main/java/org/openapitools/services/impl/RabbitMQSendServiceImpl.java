@@ -1,5 +1,6 @@
-package org.openapitools.services;
+package org.openapitools.services.impl;
 
+import org.openapitools.services.RabbitMQSenderService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

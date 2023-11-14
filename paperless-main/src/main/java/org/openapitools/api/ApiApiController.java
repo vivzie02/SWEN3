@@ -1,6 +1,10 @@
 package org.openapitools.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.minio.PutObjectArgs;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openapitools.configuration.MinioConfig.MinioConfig;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.openapitools.model.*;
 import org.openapitools.services.DocumentService;
@@ -36,6 +40,8 @@ import javax.annotation.Generated;
 @CrossOrigin(origins = "http://localhost:8080")
 public class ApiApiController implements ApiApi {
 
+    protected static final Logger logger = LogManager.getLogger();
+
     private final NativeWebRequest request;
 
     @Autowired
@@ -45,6 +51,9 @@ public class ApiApiController implements ApiApi {
 
     @Autowired
     public DocumentService documentService;
+
+    @Autowired
+    public MinioConfig minioConfig;
 
 
     @Autowired
@@ -85,7 +94,30 @@ public class ApiApiController implements ApiApi {
             rabbitMQSenderService.sendDocumentMessage(jsonDocument);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            // Handle the exception (e.g., return an error response)
+        }
+
+        // Upload each document to MinIO
+        logger.info("uploading to MinIO");
+        for (MultipartFile file : document) {
+            try {
+                // Specify your MinIO bucket and object name
+                String bucketName = "mein-bucket";
+                String objectName = "object-name/" + file.getOriginalFilename();
+
+                // Upload the document to MinIO
+                minioConfig.minioClient().putObject(
+                        PutObjectArgs.builder()
+                                .bucket(bucketName)
+                                .object(objectName)
+                                .stream(file.getInputStream(), file.getSize(), -1)
+                                .contentType(file.getContentType())
+                                .build()
+                );
+            } catch (Exception ex) {
+                logger.error("Error uploading document to MinIO: {}", ex.getMessage());
+                ex.printStackTrace();
+                // Handle the exception (e.g., return an error response)
+            }
         }
 
         return ResponseEntity.ok().build();

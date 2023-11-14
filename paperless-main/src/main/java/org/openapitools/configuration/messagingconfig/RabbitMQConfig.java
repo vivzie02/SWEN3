@@ -1,4 +1,4 @@
-package org.openapitools.messagingconfig;
+package org.openapitools.configuration.messagingconfig;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
