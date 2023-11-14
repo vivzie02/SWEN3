@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper; // Import ObjectMapper
 import javax.validation.constraints.*;
 import javax.validation.Valid;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -59,27 +60,33 @@ public class ApiApiController implements ApiApi {
     public ResponseEntity<Void> uploadDocument(String title, OffsetDateTime created, Integer documentType, List<Integer> tags, Integer correspondent, List<MultipartFile> document){
         //Document document1 = new Document();
         Document document1 = Document.builder()
-                .title(JsonNullable.of(title))
-                .created(created)
-                .documentType(JsonNullable.of(documentType))
-                .tags(JsonNullable.of(tags))
-                .correspondent(JsonNullable.of(correspondent))
-                // ... set other properties as needed
+                .id(1)
+                .correspondent(JsonNullable.of(2))
+                .documentType(JsonNullable.of(3))
+                .storagePath(JsonNullable.of(4))
+                .title(JsonNullable.of("TestTitle"))
+                .content(JsonNullable.of("TestContent"))
+                .tags(JsonNullable.of(Arrays.asList(5, 6, 7)))
+                //.created(OffsetDateTime.now())
+                //.createdDate(OffsetDateTime.now())
+                //.modified(OffsetDateTime.now())
+                //.added(OffsetDateTime.now())
+                .archiveSerialNumber(JsonNullable.of("ASN123"))
+                .originalFileName(JsonNullable.of("original.txt"))
+                .archivedFileName(JsonNullable.of("archived.txt"))
                 .build();
-
 
         documentService.saveDocument(document1);
 
-
         // Convert document1 to JSON String
-        /*ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
         try {
             String jsonDocument = mapper.writeValueAsString(document1);
             rabbitMQSenderService.sendDocumentMessage(jsonDocument);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             // Handle the exception (e.g., return an error response)
-        }*/
+        }
 
         return ResponseEntity.ok().build();
     }

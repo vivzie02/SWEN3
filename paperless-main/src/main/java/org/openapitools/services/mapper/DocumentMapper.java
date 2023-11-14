@@ -4,6 +4,7 @@ import org.mapstruct.factory.Mappers;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.openapitools.model.Document;
 import org.openapitools.persistence.entities.DocumentEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
