@@ -22,26 +22,29 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-  minio:
+  minio-image:
+    container_name: minio
     image: minio/minio
+    restart: always
+    working_dir: "/minio-image/storage"
     volumes:
-      - minio_data:/data
-    environment:
-      MINIO_ROOT_USER: minioadmin  # Change to a secure username
-      MINIO_ROOT_PASSWORD: minioadmin  # Change to a secure password
-    command: server /data
+        - ./Storage/minio/storage:/minio-image/storage
     ports:
-      - "9000:9000" # MinIO API
-      - "9001:9001" # MinIO Console
+        - "9000:9000"
+        - "9001:9001"
+    environment:
+        MINIO_ROOT_USER: minio-image
+        MINIO_ROOT_PASSWORD: minio-image-pass
+    command: server /minio-image/storage --console-address :9001
   rabbitmq:
     image: "rabbitmq:3-management"
     hostname: "rabbitmq"
     environment:
-      RABBITMQ_DEFAULT_USER: user  # Change to a secure username
-      RABBITMQ_DEFAULT_PASS: password  # Change to a secure password
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
     ports:
-      - "5672:5672" # RabbitMQ server
-      - "15672:15672" # RabbitMQ management
+      - "5672:5672"  # RabbitMQ server
+      - "15672:15672"  # RabbitMQ management
 
 volumes:
   postgres_data:
