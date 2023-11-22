@@ -8,6 +8,7 @@ import org.openapitools.configuration.MinioConfig.MinioConfig;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.openapitools.model.*;
 import org.openapitools.services.DocumentService;
+import org.openapitools.services.MinioService;
 import org.openapitools.services.RabbitMQSenderService;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -39,8 +40,10 @@ import javax.annotation.Generated;
 @RequestMapping("${openapi.paperlessRestServer.base-path:}")
 @CrossOrigin(origins = "http://localhost:8080")
 public class ApiApiController implements ApiApi {
-
     protected static final Logger logger = LogManager.getLogger();
+
+    @Autowired
+    private MinioService minioService;
 
     private final NativeWebRequest request;
 
@@ -51,10 +54,6 @@ public class ApiApiController implements ApiApi {
 
     @Autowired
     public DocumentService documentService;
-
-    @Autowired
-    public MinioConfig minioConfig;
-
 
     @Autowired
     private RabbitMQSenderService rabbitMQSenderService;
@@ -93,31 +92,14 @@ public class ApiApiController implements ApiApi {
             String jsonDocument = mapper.writeValueAsString(document1);
             rabbitMQSenderService.sendDocumentMessage(jsonDocument);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
 
-        // Upload each document to MinIO
-        logger.info("uploading to MinIO");
-        for (MultipartFile file : document) {
-            try {
-                // Specify your MinIO bucket and object name
-                String bucketName = "mein-bucket";
-                String objectName = "object-name/" + file.getOriginalFilename();
-
-                // Upload the document to MinIO
-                minioConfig.minioClient().putObject(
-                        PutObjectArgs.builder()
-                                .bucket(bucketName)
-                                .object(objectName)
-                                .stream(file.getInputStream(), file.getSize(), -1)
-                                .contentType(file.getContentType())
-                                .build()
-                );
-            } catch (Exception ex) {
-                logger.error("Error uploading document to MinIO: {}", ex.getMessage());
-                ex.printStackTrace();
-                // Handle the exception (e.g., return an error response)
-            }
+        try{
+            minioService.save(document);
+        }
+        catch (Exception ex){
+            logger.error(ex);
         }
 
         return ResponseEntity.ok().build();

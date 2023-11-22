@@ -22,7 +22,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-  minio-image:
+  minio:
     container_name: minio
     image: minio/minio
     restart: always
@@ -45,7 +45,7 @@ services:
     ports:
       - "5672:5672"  # RabbitMQ server
       - "15672:15672"  # RabbitMQ management
-
+      
 volumes:
   postgres_data:
   minio_data:
