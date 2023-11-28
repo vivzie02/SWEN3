@@ -7,9 +7,11 @@ import org.apache.logging.log4j.Logger;
 import org.openapitools.configuration.MinioConfig.MinioConfig;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.openapitools.model.*;
+import org.openapitools.persistence.entities.DocumentEntity;
 import org.openapitools.services.DocumentService;
 import org.openapitools.services.MinioService;
 import org.openapitools.services.RabbitMQSenderService;
+import org.openapitools.services.mapper.DocumentMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.OffsetDateTime;
@@ -26,6 +28,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import com.fasterxml.jackson.databind.ObjectMapper; // Import ObjectMapper
 
 
+import javax.annotation.Resource;
 import javax.validation.constraints.*;
 import javax.validation.Valid;
 
@@ -59,6 +62,8 @@ public class ApiApiController implements ApiApi {
     private RabbitMQSenderService rabbitMQSenderService;
 
 
+
+
     @Override
     public Optional<NativeWebRequest> getRequest() {
         return Optional.ofNullable(request);
@@ -66,9 +71,9 @@ public class ApiApiController implements ApiApi {
 
     @Override
     public ResponseEntity<Void> uploadDocument(String title, OffsetDateTime created, Integer documentType, List<Integer> tags, Integer correspondent, List<MultipartFile> document){
-        //Document document1 = new Document();
+        /*
         Document document1 = Document.builder()
-                .id(1)
+                //.id(1)
                 .correspondent(JsonNullable.of(2))
                 .documentType(JsonNullable.of(3))
                 .storagePath(JsonNullable.of(4))
@@ -83,6 +88,34 @@ public class ApiApiController implements ApiApi {
                 .originalFileName(JsonNullable.of("original.txt"))
                 .archivedFileName(JsonNullable.of("archived.txt"))
                 .build();
+        */
+
+        //nur für einzelne Files
+        String originalFileName = document.isEmpty() ? "" : document.get(0).getOriginalFilename();
+        String name = document.isEmpty() ? "" : document.get(0).getName();
+        String contentType = document.isEmpty() ? "" : document.get(0).getContentType();
+        long size = document.isEmpty() ? 0 : document.get(0).getSize();
+        //Resource inputStream = (Resource) document.get(0).getResource();
+
+
+        Document document1 = Document.builder()
+                .correspondent(JsonNullable.of(correspondent))
+                .documentType(JsonNullable.of(documentType))
+                // Der storagePath wird dynamisch während der Dateispeicherung festgelegt
+                .storagePath(JsonNullable.of(4))
+                .title(JsonNullable.of(name))
+                // Der Inhalt kann aus der MultipartFile-Liste extrahiert werden, falls erforderlich
+                .content(JsonNullable.of("TestContent"))
+                .tags(JsonNullable.of(tags))
+                .created(created) // oder OffsetDateTime.now(), falls nicht übergeben
+                .createdDate(created)
+                //.modified(OffsetDateTime.now())
+                //.added(OffsetDateTime.now())
+                .archiveSerialNumber(JsonNullable.of(title)) // Setzen Sie dies entsprechend, falls benötigt
+                .originalFileName(JsonNullable.of(originalFileName)) // Setzen Sie den Dateinamen der ersten Datei, falls benötigt
+                .archivedFileName(JsonNullable.of(title)) // Setzen Sie diesen Wert entsprechend, falls benötigt
+                .build();
+
 
         documentService.saveDocument(document1);
 
@@ -90,19 +123,32 @@ public class ApiApiController implements ApiApi {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String jsonDocument = mapper.writeValueAsString(document1);
-            rabbitMQSenderService.sendDocumentMessage(jsonDocument);
+            //rabbitMQSenderService.sendDocumentMessage(jsonDocument);
+            rabbitMQSenderService.sendDocumentMessage(originalFileName);
         } catch (JsonProcessingException e) {
             logger.error(e);
         }
 
+        // ab hier:
+        //String minioFileName = generateMinioFileName(correspondent, documentType, title);
+
+
+
+
         try{
-            minioService.save(document);
+            minioService.save(document/*, minioFileName*/);
         }
         catch (Exception ex){
             logger.error(ex);
         }
 
         return ResponseEntity.ok().build();
+    }
+
+    private String generateMinioFileName(Integer correspondent, Integer documentType, String title) {
+        // Hier erstellen Sie eine Dateibenennungslogik basierend auf den Attributen
+        // Beispiel: correspondent_documentType_title
+        return correspondent + "_" + documentType + "_" + title;
     }
 
 }

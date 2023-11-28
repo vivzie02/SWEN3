@@ -36,7 +36,7 @@ public class MinioService {
             return minioClient.getObject(
                     GetObjectArgs.builder()
                             .bucket(bucketName)
-                            .object(fileName)
+                            .object("object-name/"+fileName)
                             .build()
             );
         } catch (MinioException | InvalidKeyException | NoSuchAlgorithmException | IOException e) {

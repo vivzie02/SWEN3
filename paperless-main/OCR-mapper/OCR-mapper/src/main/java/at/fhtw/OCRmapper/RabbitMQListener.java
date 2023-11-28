@@ -30,7 +30,7 @@ public class RabbitMQListener {
             Files.copy(fileStream, tempFile, StandardCopyOption.REPLACE_EXISTING);
 
             // OCR durchführen
-            String extractedText = ocrService.extractTextFromFile(tempFile.toFile());
+            String extractedText = ocrService.extractTextFromPdf(tempFile.toFile());
             System.out.println("Extrahierter Text: " + extractedText);
 
             // Aufräumen: Temporäre Datei löschen
