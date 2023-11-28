@@ -68,11 +68,11 @@ public class ApiApiController implements ApiApi {
     public ResponseEntity<Void> uploadDocument(String title, OffsetDateTime created, Integer documentType, List<Integer> tags, Integer correspondent, List<MultipartFile> document){
         //Document document1 = new Document();
         Document document1 = Document.builder()
-                .id(1)
+                .id(5)
                 .correspondent(JsonNullable.of(2))
                 .documentType(JsonNullable.of(3))
                 .storagePath(JsonNullable.of(4))
-                .title(JsonNullable.of("TestTitle"))
+                .title(JsonNullable.of("title"))
                 .content(JsonNullable.of("TestContent"))
                 .tags(JsonNullable.of(Arrays.asList(5, 6, 7)))
                 //.created(OffsetDateTime.now())
@@ -80,7 +80,7 @@ public class ApiApiController implements ApiApi {
                 //.modified(OffsetDateTime.now())
                 //.added(OffsetDateTime.now())
                 .archiveSerialNumber(JsonNullable.of("ASN123"))
-                .originalFileName(JsonNullable.of("original.txt"))
+                .originalFileName(document.get(0).getOriginalFilename())
                 .archivedFileName(JsonNullable.of("archived.txt"))
                 .build();
 
@@ -90,6 +90,7 @@ public class ApiApiController implements ApiApi {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String jsonDocument = mapper.writeValueAsString(document1);
+            logger.info(jsonDocument);
             rabbitMQSenderService.sendDocumentMessage(jsonDocument);
         } catch (JsonProcessingException e) {
             logger.error(e);

@@ -43,7 +43,6 @@ class OpenApiGeneratorApplicationTests {
                 .modified(OffsetDateTime.now())
                 .added(OffsetDateTime.now())
                 .archiveSerialNumber("ASN123")
-                .originalFileName("original.txt")
                 .archivedFileName("archived.txt")
                 .build();
 
@@ -62,7 +61,6 @@ class OpenApiGeneratorApplicationTests {
         assertEquals(documentEntity.getModified(), document.getModified());
         assertEquals(documentEntity.getAdded(), document.getAdded());
         assertEquals(documentEntity.getArchiveSerialNumber(), document.getArchiveSerialNumber().get());
-        assertEquals(documentEntity.getOriginalFileName(), document.getOriginalFileName().get());
         assertEquals(documentEntity.getArchivedFileName(), document.getArchivedFileName().get());
     }
 
@@ -81,7 +79,6 @@ class OpenApiGeneratorApplicationTests {
                 .modified(OffsetDateTime.now())
                 .added(OffsetDateTime.now())
                 .archiveSerialNumber(JsonNullable.of("ASN123"))
-                .originalFileName(JsonNullable.of("original.txt"))
                 .archivedFileName(JsonNullable.of("archived.txt"))
                 .build();
 
@@ -100,7 +97,6 @@ class OpenApiGeneratorApplicationTests {
         assertEquals(document.getModified(), documentEntity.getModified());
         assertEquals(document.getAdded(), documentEntity.getAdded());
         assertEquals(document.getArchiveSerialNumber().get(), documentEntity.getArchiveSerialNumber());
-        assertEquals(document.getOriginalFileName().get(), documentEntity.getOriginalFileName());
         assertEquals(document.getArchivedFileName().get(), documentEntity.getArchivedFileName());
     }
 

@@ -1,11 +1,11 @@
 package at.fhtw.OCRMapper.services.impl;
 
-import at.fhtw.OCRMapper.OcrMapperApplication;
 import at.fhtw.OCRMapper.services.OCRService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.errors.MinioException;
-import io.minio.messages.Item;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,18 +23,39 @@ public class OCRServiceImpl implements OCRService {
     @Autowired
     private MinioClient minioClient;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Override
     @RabbitListener(queues = "paperless.documents.queue")
-    public void saveDocument(String message){
-        if(!message.equals("")) {
-            log.info("successfully read info from queue");
+    public void saveDocument(String message) {
+        if (!message.equals("")) {
+            log.info("Successfully read info from queue");
             log.info(message);
-        }
 
-        getFile("mein-bucket", "object-name/Review_Mindmap_Ziering.pdf");
+            // Extract title from the JSON message
+            String title = extractTitleFromJson(message);
+
+            // Use the title in further processing if needed
+            log.info("Extracted title from JSON: " + title);
+
+            // Now you can use the title as needed
+
+            InputStream file = getFile("mein-bucket", "object-name/" + title);
+        }
     }
 
-    public InputStream getFile(String bucketName, String objectName){
+    private String extractTitleFromJson(String jsonMessage) {
+        try {
+            JsonNode jsonNode = objectMapper.readTree(jsonMessage);
+            // Assuming the title is stored under the key "title"
+            return jsonNode.get("original_file_name").asText();
+        } catch (IOException e) {
+            log.error("Error extracting title from JSON", e);
+            return null;
+        }
+    }
+
+    public InputStream getFile(String bucketName, String objectName) {
         try {
             InputStream client = minioClient.getObject(
                     GetObjectArgs.builder()
@@ -42,13 +63,14 @@ public class OCRServiceImpl implements OCRService {
                             .object(objectName)
                             .build()
             );
-            log.info("successfully read file from minio");
+            log.info("Successfully read file from Minio");
             return client;
 
         } catch (MinioException | IOException | InvalidKeyException | NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            log.error("Error getting file from Minio", e);
             // Handle exceptions appropriately
             return null;
         }
     }
 }
+
