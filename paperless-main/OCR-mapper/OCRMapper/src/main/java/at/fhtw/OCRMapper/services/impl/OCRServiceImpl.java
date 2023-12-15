@@ -84,8 +84,8 @@
                 documentRepository.save(document);
                 log.info("saved document" + document.getTitle());
 
-                for (String line: extractedText.split("\\r?\\n")) {
-                    if(line != ""){
+                for (String line : extractedText.split("\\r?\\n")) {
+                    if (line != "") {
                         contents.add(DocumentContent.builder()
                                 .documentId(document.getId())
                                 .line(line)
@@ -96,6 +96,47 @@
                 log.info("Saving file content");
                 documentContentRepository.saveAll(contents);
             }
+        }
+
+        // Updated method to extract text from PDF using Tesseract OCR
+        public String extractTextFromPdf(InputStream pdfInputStream) {
+            try {
+                // Convert PDF to image
+                List<BufferedImage> images = convertPdfToImages(pdfInputStream);
+
+                // Use Tesseract to perform OCR on each image
+                StringBuilder result = new StringBuilder();
+                for (BufferedImage image : images) {
+                    result.append(tesseract.doOCR(image)).append("\n");
+                }
+
+                return result.toString();
+            } catch (IOException | TesseractException e) {
+                e.printStackTrace(); // Handle the exception appropriately
+                return "";
+            }
+        }
+
+        // New method to convert PDF to a list of images
+        private static List<BufferedImage> convertPdfToImages(InputStream pdfInputStream) throws IOException {
+            List<BufferedImage> images = new ArrayList<>();
+
+            // Save the PDF to a temporary file
+            Path tempPdfPath = saveToTempFile(pdfInputStream);
+
+            try (PDDocument document = Loader.loadPDF(tempPdfPath.toFile())) {
+                PDFRenderer pdfRenderer = new PDFRenderer(document);
+
+                for (int page = 0; page < document.getNumberOfPages(); ++page) {
+                    BufferedImage image = pdfRenderer.renderImageWithDPI(page, 300);
+                    images.add(image);
+                }
+            } finally {
+                // Clean up resources
+                Files.delete(tempPdfPath);
+            }
+
+            return images;
         }
 
         private String extractTitleFromJson(String jsonMessage) {
@@ -121,27 +162,6 @@
                 log.error("Error getting file from Minio", e);
                 // Handle exceptions appropriately
                 return null;
-            }
-        }
-
-        public static String extractTextFromPdf(InputStream pdfInputStream) {
-            try {
-                // Save the PDF to a temporary file
-                Path tempPdfPath = saveToTempFile(pdfInputStream);
-
-                // Use PDFBox to extract text from the PDF
-                PDDocument document = Loader.loadPDF(tempPdfPath.toFile());
-                PDFTextStripper pdfTextStripper = new PDFTextStripper();
-                String content = pdfTextStripper.getText(document);
-
-                // Clean up resources
-                document.close();
-                Files.delete(tempPdfPath);
-
-                return content;
-            } catch (IOException e) {
-                e.printStackTrace(); // Handle the exception appropriately
-                return "";
             }
         }
 
