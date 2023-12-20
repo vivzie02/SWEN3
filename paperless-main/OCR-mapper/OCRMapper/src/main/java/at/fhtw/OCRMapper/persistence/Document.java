@@ -15,3 +15,4 @@ public class Document {
     private Long id;
     private String title;
 }
+

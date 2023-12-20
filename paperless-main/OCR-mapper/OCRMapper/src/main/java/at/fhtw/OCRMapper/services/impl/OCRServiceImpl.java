@@ -1,5 +1,8 @@
     package at.fhtw.OCRMapper.services.impl;
 
+    import at.fhtw.OCRMapper.elasticSearch.YourEntity;
+    import at.fhtw.OCRMapper.elasticSearch.YourEntityController;
+    import at.fhtw.OCRMapper.elasticSearch.YourEntityRepository;
     import at.fhtw.OCRMapper.persistence.Document;
     import at.fhtw.OCRMapper.persistence.DocumentContent;
     import at.fhtw.OCRMapper.persistence.DocumentContentRepository;
@@ -21,6 +24,7 @@
     import org.apache.pdfbox.text.PDFTextStripper;
     import org.springframework.amqp.rabbit.annotation.RabbitListener;
     import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.ResponseEntity;
     import org.springframework.stereotype.Service;
     import org.apache.log4j.Logger;
 
@@ -34,6 +38,7 @@
     import java.security.NoSuchAlgorithmException;
     import java.util.ArrayList;
     import java.util.List;
+    import java.util.Optional;
 
     @Service
     public class OCRServiceImpl implements OCRService {
@@ -51,6 +56,10 @@
         private final ObjectMapper objectMapper = new ObjectMapper();
         private final ITesseract tesseract = new Tesseract();
 
+        @Autowired
+        private YourEntityController yourEntityController;
+        @Autowired
+        private YourEntityRepository repository;
         @Override
         @RabbitListener(queues = "paperless.documents.queue")
         public void saveDocument(String message) {
@@ -59,6 +68,7 @@
             if (!message.equals("")) {
                 log.info("Successfully read info from queue");
                 log.info(message);
+
 
                 // Extract title from the JSON message
                 String title = extractTitleFromJson(message);
@@ -80,7 +90,13 @@
                 Document document = Document.builder()
                         .title(title)
                         .build();
-
+                //System.out.println("my id and so " + document);
+                try{
+                    System.out.println(yourEntityController.createDocument(document.getId(), document.getTitle()));
+                }
+                catch (Exception e){
+                    System.out.println("nope ma dude" + e);
+                }
                 documentRepository.save(document);
                 log.info("saved document" + document.getTitle());
 
@@ -96,6 +112,7 @@
                 log.info("Saving file content");
                 documentContentRepository.saveAll(contents);
             }
+
         }
 
         // Updated method to extract text from PDF using Tesseract OCR
