@@ -61,7 +61,6 @@
         @Autowired
         private YourEntityRepository repository;
         @Override
-        @RabbitListener(queues = "paperless.documents.queue")
         public void saveDocument(String message) {
             List<DocumentContent> contents = new ArrayList<>();
 
