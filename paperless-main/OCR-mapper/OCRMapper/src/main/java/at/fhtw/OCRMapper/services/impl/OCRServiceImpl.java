@@ -90,20 +90,25 @@
                 Document document = Document.builder()
                         .title(title)
                         .build();
+
+                document = documentRepository.save(document);
+                //documentRepository.flush();
+                Long documentId = document.getId() - 1;
+
                 //System.out.println("my id and so " + document);
                 try{
-                    System.out.println(yourEntityController.createDocument(document.getId(), document.getTitle()));
+                    System.out.println(yourEntityController.createDocument(documentId, document.getTitle()));
                 }
                 catch (Exception e){
                     System.out.println("nope ma dude" + e);
                 }
-                documentRepository.save(document);
-                log.info("saved document" + document.getTitle());
+
+                log.info("saved document" + document.getTitle() + " with ID " + documentId);
 
                 for (String line : extractedText.split("\\r?\\n")) {
                     if (line != "") {
                         contents.add(DocumentContent.builder()
-                                .documentId(document.getId())
+                                .documentId(documentId)
                                 .line(line)
                                 .build());
                     }
