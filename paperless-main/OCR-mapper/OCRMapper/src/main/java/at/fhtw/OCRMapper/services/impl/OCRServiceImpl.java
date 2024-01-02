@@ -1,8 +1,6 @@
     package at.fhtw.OCRMapper.services.impl;
 
-    import at.fhtw.OCRMapper.elasticSearch.YourEntity;
     import at.fhtw.OCRMapper.elasticSearch.YourEntityController;
-    import at.fhtw.OCRMapper.elasticSearch.YourEntityRepository;
     import at.fhtw.OCRMapper.persistence.Document;
     import at.fhtw.OCRMapper.persistence.DocumentContent;
     import at.fhtw.OCRMapper.persistence.DocumentContentRepository;
@@ -16,19 +14,13 @@
     import net.sourceforge.tess4j.ITesseract;
     import net.sourceforge.tess4j.Tesseract;
     import net.sourceforge.tess4j.TesseractException;
-    import org.apache.commons.compress.utils.IOUtils;
     import org.apache.pdfbox.Loader;
     import org.apache.pdfbox.pdmodel.PDDocument;
-    import org.apache.pdfbox.pdmodel.PDPage;
     import org.apache.pdfbox.rendering.PDFRenderer;
-    import org.apache.pdfbox.text.PDFTextStripper;
-    import org.springframework.amqp.rabbit.annotation.RabbitListener;
     import org.springframework.beans.factory.annotation.Autowired;
-    import org.springframework.http.ResponseEntity;
     import org.springframework.stereotype.Service;
-    import org.apache.log4j.Logger;
-
-    import javax.imageio.ImageIO;
+    import org.apache.logging.log4j.LogManager;
+    import org.apache.logging.log4j.Logger;
     import java.awt.image.BufferedImage;
     import java.io.*;
     import java.nio.file.Files;
@@ -38,11 +30,10 @@
     import java.security.NoSuchAlgorithmException;
     import java.util.ArrayList;
     import java.util.List;
-    import java.util.Optional;
 
     @Service
     public class OCRServiceImpl implements OCRService {
-        static Logger log = Logger.getLogger(OCRServiceImpl.class.getName());
+        protected static final Logger log = LogManager.getLogger();
 
         @Autowired
         private MinioClient minioClient;
@@ -58,8 +49,6 @@
 
         @Autowired
         private YourEntityController yourEntityController;
-        @Autowired
-        private YourEntityRepository repository;
         @Override
         public void saveDocument(String message) {
             List<DocumentContent> contents = new ArrayList<>();
@@ -96,7 +85,7 @@
 
                 //System.out.println("my id and so " + document);
                 try{
-                    System.out.println(yourEntityController.createDocument(documentId, document.getTitle()));
+                    System.out.println(yourEntityController.createDocument(documentId, document.getTitle(), extractedText));
                 }
                 catch (Exception e){
                     System.out.println("nope ma dude" + e);
@@ -105,7 +94,7 @@
                 log.info("saved document" + document.getTitle() + " with ID " + documentId);
 
                 for (String line : extractedText.split("\\r?\\n")) {
-                    if (line != "") {
+                    if (!line.equals("")) {
                         contents.add(DocumentContent.builder()
                                 .documentId(documentId)
                                 .line(line)

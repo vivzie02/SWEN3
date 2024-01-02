@@ -23,10 +23,11 @@ public class YourEntityController {
 
     //@PostMapping("/entities")
     //@ResponseStatus(HttpStatus.CREATED)
-    public String createDocument(Long id, String title ) {
+    public String createDocument(Long id, String title, String content) {
         DocumentSearch document = new DocumentSearch();
         document.setId(String.valueOf(id));
         document.setTitle(title);
+        document.setContent(content);
         String toS = "";
         try {
             DocumentSearch savedDocument = documentRepository.save(document);

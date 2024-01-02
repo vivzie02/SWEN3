@@ -12,6 +12,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8088:8088"
+    depends_on:
+      - elasticsearch
   postgres:
     image: postgres:latest
     environment:
@@ -45,7 +47,43 @@ services:
     ports:
       - "5672:5672"  # RabbitMQ server
       - "15672:15672"  # RabbitMQ management
-      
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.15
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - network.host=0.0.0.0
+      - http.host=0.0.0.0
+      - transport.host=127.0.0.1
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.15
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    ports:
+      - "9092:5601"
+    depends_on:
+      - elasticsearch
+
+  ocrservice:
+    build: 
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8090"
+    depends_on:
+      - elasticsearch
+      - rabbitmq
+      - minio
+      - postgres
+
 volumes:
   postgres_data:
   minio_data:
+  esdata1:
+    driver: local
