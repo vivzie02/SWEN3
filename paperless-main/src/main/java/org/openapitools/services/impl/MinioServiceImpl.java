@@ -1,14 +1,18 @@
 package org.openapitools.services.impl;
 
+import io.minio.GetObjectArgs;
 import io.minio.PutObjectArgs;
+import io.minio.StatObjectArgs;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openapitools.configuration.MinioConfig.MinioConfig;
 import org.openapitools.services.MinioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.util.List;
 
 @Service
@@ -44,4 +48,39 @@ public class MinioServiceImpl implements MinioService {
             }
         }
     }
+    @Override
+    public Pair<String, String> get(String filename){
+        try {
+            // Specify your MinIO bucket and the object name (filename)
+            String bucketName = "mein-bucket";
+            String objectName = "object-name/" + filename;
+
+            // Get the object from MinIO
+            InputStream object = minioConfig.minioClient().getObject(
+                    GetObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(objectName)
+                            .build()
+            );
+
+            // Get content type of the object
+            String contentType = minioConfig.minioClient().statObject(
+                    StatObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(objectName)
+                            .build()
+            ).contentType();
+
+            // Return the object stream and content type
+            logger.info("retrieving from minio");
+            return Pair.of(object.toString(), contentType);
+
+        } catch (Exception ex) {
+            logger.error("Error retrieving document from MinIO: {}", ex.getMessage());
+            ex.printStackTrace();
+            // Return null or handle the exception as required
+            return null;
+        }
+    }
+
 }
