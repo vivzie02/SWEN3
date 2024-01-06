@@ -11,7 +11,7 @@ public class MinioConfig {
     public MinioClient minioClient() {
         return MinioClient.builder()
                 //für docker http://minio:9000
-                .endpoint("http://localhost:9000")
+                .endpoint("http://minio:9000")
                 .credentials("minio-image", "minio-image-pass") // change as necessary
                 .region("at")
                 .build();

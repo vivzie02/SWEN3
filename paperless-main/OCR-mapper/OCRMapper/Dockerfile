@@ -1,21 +1,14 @@
 # Use an official OpenJDK runtime as a parent image
-FROM openjdk:11-jdk-slim
+FROM openjdk:17-jdk-slim
 
-# Set the working directory in the container
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the maven executable to the image's bin directory
-COPY mvnw .
-COPY .mvn .mvn
+# Copy the application JAR file into the container
+COPY ./target/OCRService.jar /app/OCRService.jar
 
-# Copy the pom.xml file
-COPY pom.xml .
+# Expose the port that your Spring Boot application will run on
+EXPOSE 8090
 
-# Copy the project files
-COPY src src
-
-# Build the application
-RUN chmod +x mvnw && ./mvnw package -DskipTests
-
-# Run the jar file
-ENTRYPOINT ["java", "-jar", "target/OCRService.jar"]
+# Specify the command to run on container start
+CMD ["java", "-jar", "OCRService.jar"]

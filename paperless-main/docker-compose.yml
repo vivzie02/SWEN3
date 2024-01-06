@@ -15,6 +15,7 @@ services:
     depends_on:
       - elasticsearch
   postgres:
+    container_name: postgres
     image: postgres:latest
     environment:
       POSTGRES_DB: swen3-db
@@ -38,7 +39,9 @@ services:
         MINIO_ROOT_USER: minio-image
         MINIO_ROOT_PASSWORD: minio-image-pass
     command: server /minio-image/storage --console-address :9001
+
   rabbitmq:
+    container_name: "rabbitmq"
     image: "rabbitmq:3-management"
     hostname: "rabbitmq"
     environment:
@@ -49,17 +52,14 @@ services:
       - "15672:15672"  # RabbitMQ management
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.15
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node
-      - network.host=0.0.0.0
-      - http.host=0.0.0.0
-      - transport.host=127.0.0.1
-    ports:
-      - "9200:9200"
-    volumes:
-      - esdata1:/usr/share/elasticsearch/data
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.17.15
+      container_name: elasticsearch
+      environment:
+        - discovery.type=single-node
+      ports:
+        - "9200:9200"
+      volumes:
+        - esdata1:/usr/share/elasticsearch/data
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.17.15
@@ -70,9 +70,10 @@ services:
       - "9092:5601"
     depends_on:
       - elasticsearch
-
   ocrservice:
-    build: 
+    image: ocrservice
+    build:
+      context: ./OCR-mapper/OCRMapper
       dockerfile: Dockerfile
     ports:
       - "8090:8090"
@@ -81,7 +82,6 @@ services:
       - rabbitmq
       - minio
       - postgres
-
 volumes:
   postgres_data:
   minio_data:
