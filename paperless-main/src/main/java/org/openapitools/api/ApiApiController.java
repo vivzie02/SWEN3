@@ -127,8 +127,8 @@ public class ApiApiController implements ApiApi {
                 }
             }
         });
-        System.out.println("yess");
-        System.out.println("-> " + query);
+        logger.info("searching");
+        logger.info("-> " + query);
         List<String> titles = new ArrayList<>();
 /*
         try (RestHighLevelClient client = new RestHighLevelClient(
@@ -166,26 +166,22 @@ public class ApiApiController implements ApiApi {
         }
 
         try {
-            //LOGGING
-            logger.info("--- GET FILE ---: " + titleTest);
-
-            Pair<String, String> fileData = minioService.get(titleTest);
+            logger.info("getting file");
+            Pair<InputStream, String> fileData = minioService.get(titleTest);
             if (fileData == null || fileData.getFirst() == null) {
-                System.out.println("--> " + fileData + " ");
+                logger.info("--> " + fileData + " ");
                 return ResponseEntity.notFound().build();
             }
 
-            String fileStream = fileData.getFirst();
+            InputStream fileStream = fileData.getFirst();
             String contentType = fileData.getSecond();
 
             //InputStreamResource resource = new InputStreamResource(fileStream);
-
             return ResponseEntity.ok().body(fileData.toString());/*
                     .contentType(MediaType.parseMediaType(contentType))
                     .body(resource);*/
         } catch (Exception e) {
-            //LOGGING
-            logger.error("Error occurred while fetching file: " + titleTest, e);
+            logger.error(e);
             return ResponseEntity.internalServerError().body("Error occurred: " + e.getMessage());
         }
 
@@ -193,31 +189,7 @@ public class ApiApiController implements ApiApi {
        // return new ResponseEntity<>( HttpStatus.OK);
 
     }
-/*
-    public ResponseEntity<?> getFile(@PathVariable String filename) {
-        try {
-            //LOGGING
-            logger.info("--- GET FILE ---: " + filename);
 
-            Pair<InputStream, String> fileData = minioService.get(filename);
-            if (fileData == null || fileData.getFirst() == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            InputStream fileStream = fileData.getFirst();
-            String contentType = fileData.getSecond();
-
-            InputStreamResource resource = new InputStreamResource(fileStream);
-
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(contentType))
-                    .body(resource);
-        } catch (Exception e) {
-            //LOGGING
-            logger.error("Error occurred while fetching file: " + filename, e);
-            return ResponseEntity.internalServerError().body("Error occurred: " + e.getMessage());
-        }
-    }*/
 
 
     @Override

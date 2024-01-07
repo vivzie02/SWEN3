@@ -85,10 +85,10 @@
 
                 //System.out.println("my id and so " + document);
                 try{
-                    System.out.println(yourEntityController.createDocument(documentId, document.getTitle(), extractedText));
+                    log.info(yourEntityController.createDocument(documentId, document.getTitle(), extractedText));
                 }
                 catch (Exception e){
-                    System.out.println("nope ma dude" + e);
+                    log.info("nope ma dude" + e);
                 }
 
                 log.info("saved document" + document.getTitle() + " with ID " + documentId);

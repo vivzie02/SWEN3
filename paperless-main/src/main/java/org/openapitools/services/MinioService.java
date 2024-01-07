@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface MinioService {
     public void save(List<MultipartFile> document);
-    public Pair<String, String> get(String filename);
+    public Pair<InputStream, String> get(String filename);
 }

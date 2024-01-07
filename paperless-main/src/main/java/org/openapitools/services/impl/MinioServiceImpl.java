@@ -49,7 +49,7 @@ public class MinioServiceImpl implements MinioService {
         }
     }
     @Override
-    public Pair<String, String> get(String filename){
+    public Pair<InputStream, String> get(String filename){
         try {
             // Specify your MinIO bucket and the object name (filename)
             String bucketName = "mein-bucket";
@@ -73,7 +73,7 @@ public class MinioServiceImpl implements MinioService {
 
             // Return the object stream and content type
             logger.info("retrieving from minio");
-            return Pair.of(object.toString(), contentType);
+            return Pair.of(object, contentType);
 
         } catch (Exception ex) {
             logger.error("Error retrieving document from MinIO: {}", ex.getMessage());
