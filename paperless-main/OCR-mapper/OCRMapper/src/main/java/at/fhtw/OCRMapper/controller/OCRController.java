@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class OCRController {
     protected static final Logger log = LogManager.getLogger();
-    //@Autowired
+    @Autowired
     OCRService ocrService;
 
     @RabbitListener(queues = "paperless.documents.queue")

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-//@Repository
+@Repository
 public interface YourEntityRepository extends ElasticsearchRepository<YourEntity, String> {
     // Custom query methods if needed
     Optional<YourEntity> findById(String id);
