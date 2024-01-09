@@ -1,6 +1,12 @@
 # Use an official OpenJDK runtime as a parent image
 FROM openjdk:17-jdk-slim
 
+# Install Tesseract OCR
+RUN apt-get update && apt-get install -y tesseract-ocr
+
+# Set the environment variable TESSDATA_PREFIX
+ENV TESSDATA_PREFIX /usr/share/tesseract-ocr/4.00/tessdata
+
 # Set the working directory inside the container
 WORKDIR /app
 
