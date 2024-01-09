@@ -11,4 +11,4 @@ COPY ./target/OCRService.jar /app/OCRService.jar
 EXPOSE 8090
 
 # Specify the command to run on container start
-CMD ["java", "-jar", "OCRService.jar"]
+ENTRYPOINT ["java", "-jar", "OCRService.jar"]

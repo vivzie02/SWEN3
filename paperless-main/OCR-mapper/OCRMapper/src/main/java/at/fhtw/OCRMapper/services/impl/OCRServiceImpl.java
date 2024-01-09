@@ -38,10 +38,10 @@
         @Autowired
         private MinioClient minioClient;
 
-        //@Autowired
+        @Autowired
         private DocumentContentRepository documentContentRepository;
 
-        //@Autowired
+        @Autowired
         private DocumentRepository documentRepository;
 
         private final ObjectMapper objectMapper = new ObjectMapper();

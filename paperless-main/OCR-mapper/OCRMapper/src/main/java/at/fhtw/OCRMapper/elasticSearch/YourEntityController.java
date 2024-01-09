@@ -10,12 +10,12 @@ import java.util.Optional;
 @Service
 public class YourEntityController {
 
-    //@Autowired
+    @Autowired
     private YourEntityRepository repository;
 
-    //@Autowired
+    @Autowired
     private DocumentRepositorySearch documentRepository;
-    //@Autowired
+    @Autowired
     private DocumentContentRepositorySearch documentContentRepository;
     public Optional<YourEntity> getEntityById(String id) {
         return repository.findById(id);

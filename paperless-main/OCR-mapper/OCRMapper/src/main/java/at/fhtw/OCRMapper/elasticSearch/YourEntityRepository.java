@@ -8,5 +8,5 @@ import java.util.Optional;
 @Repository
 public interface YourEntityRepository extends ElasticsearchRepository<YourEntity, String> {
     // Custom query methods if needed
-    Optional<YourEntity> findById(String id);
+    //Optional<YourEntity> findById(String id);
 }
