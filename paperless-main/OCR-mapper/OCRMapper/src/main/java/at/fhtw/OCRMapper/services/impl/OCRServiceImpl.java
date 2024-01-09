@@ -149,7 +149,7 @@
             return images;
         }
 
-        private String extractTitleFromJson(String jsonMessage) {
+        public String extractTitleFromJson(String jsonMessage) {
             try {
                 JsonNode jsonNode = objectMapper.readTree(jsonMessage);
                 // Assuming the title is stored under the key "original_file_name"
@@ -160,7 +160,7 @@
             }
         }
 
-        private InputStream getFile(String bucketName, String objectName) {
+        InputStream getFile(String bucketName, String objectName) {
             try {
                 return minioClient.getObject(
                         GetObjectArgs.builder()
@@ -175,7 +175,7 @@
             }
         }
 
-        private static Path saveToTempFile(InputStream inputStream) throws IOException {
+        public static Path saveToTempFile(InputStream inputStream) throws IOException {
             Path tempPdfPath = Files.createTempFile("temp", ".pdf");
             Files.copy(inputStream, tempPdfPath, StandardCopyOption.REPLACE_EXISTING);
             return tempPdfPath;
