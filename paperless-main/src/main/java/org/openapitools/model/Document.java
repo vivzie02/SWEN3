@@ -59,7 +59,7 @@ public class Document {
 
   private JsonNullable<String> archiveSerialNumber = JsonNullable.<String>undefined();
 
-  private JsonNullable<String> originalFileName = JsonNullable.<String>undefined();
+  private String originalFileName;
 
   private JsonNullable<String> archivedFileName = JsonNullable.<String>undefined();
 
@@ -312,7 +312,7 @@ public class Document {
   }
 
   public Document originalFileName(String originalFileName) {
-    this.originalFileName = JsonNullable.of(originalFileName);
+    this.originalFileName = originalFileName;
     return this;
   }
 
@@ -323,11 +323,11 @@ public class Document {
   
   @Schema(name = "original_file_name", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("original_file_name")
-  public JsonNullable<String> getOriginalFileName() {
+  public String getOriginalFileName() {
     return originalFileName;
   }
 
-  public void setOriginalFileName(JsonNullable<String> originalFileName) {
+  public void setOriginalFileName(String originalFileName) {
     this.originalFileName = originalFileName;
   }
 
@@ -372,7 +372,7 @@ public class Document {
         Objects.equals(this.modified, document.modified) &&
         Objects.equals(this.added, document.added) &&
         equalsNullable(this.archiveSerialNumber, document.archiveSerialNumber) &&
-        equalsNullable(this.originalFileName, document.originalFileName) &&
+        Objects.equals(this.originalFileName, document.originalFileName) &&
         equalsNullable(this.archivedFileName, document.archivedFileName);
   }
 
@@ -382,7 +382,7 @@ public class Document {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, hashCodeNullable(correspondent), hashCodeNullable(documentType), hashCodeNullable(storagePath), hashCodeNullable(title), hashCodeNullable(content), hashCodeNullable(tags), created, createdDate, modified, added, hashCodeNullable(archiveSerialNumber), hashCodeNullable(originalFileName), hashCodeNullable(archivedFileName));
+    return Objects.hash(id, hashCodeNullable(correspondent), hashCodeNullable(documentType), hashCodeNullable(storagePath), hashCodeNullable(title), hashCodeNullable(content), hashCodeNullable(tags), created, createdDate, modified, added, hashCodeNullable(archiveSerialNumber), originalFileName, hashCodeNullable(archivedFileName));
   }
 
   private static <T> int hashCodeNullable(JsonNullable<T> a) {

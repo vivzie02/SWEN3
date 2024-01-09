@@ -8,6 +8,7 @@ import org.openapitools.configuration.MinioConfig.MinioConfig;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.openapitools.model.*;
 import org.openapitools.services.DocumentService;
+import org.openapitools.services.MinioService;
 import org.openapitools.services.RabbitMQSenderService;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -39,8 +40,10 @@ import javax.annotation.Generated;
 @RequestMapping("${openapi.paperlessRestServer.base-path:}")
 @CrossOrigin(origins = "http://localhost:8080")
 public class ApiApiController implements ApiApi {
-
     protected static final Logger logger = LogManager.getLogger();
+
+    @Autowired
+    private MinioService minioService;
 
     private final NativeWebRequest request;
 
@@ -51,10 +54,6 @@ public class ApiApiController implements ApiApi {
 
     @Autowired
     public DocumentService documentService;
-
-    @Autowired
-    public MinioConfig minioConfig;
-
 
     @Autowired
     private RabbitMQSenderService rabbitMQSenderService;
@@ -69,11 +68,11 @@ public class ApiApiController implements ApiApi {
     public ResponseEntity<Void> uploadDocument(String title, OffsetDateTime created, Integer documentType, List<Integer> tags, Integer correspondent, List<MultipartFile> document){
         //Document document1 = new Document();
         Document document1 = Document.builder()
-                .id(1)
+                .id(5)
                 .correspondent(JsonNullable.of(2))
                 .documentType(JsonNullable.of(3))
                 .storagePath(JsonNullable.of(4))
-                .title(JsonNullable.of("TestTitle"))
+                .title(JsonNullable.of("title"))
                 .content(JsonNullable.of("TestContent"))
                 .tags(JsonNullable.of(Arrays.asList(5, 6, 7)))
                 //.created(OffsetDateTime.now())
@@ -81,7 +80,7 @@ public class ApiApiController implements ApiApi {
                 //.modified(OffsetDateTime.now())
                 //.added(OffsetDateTime.now())
                 .archiveSerialNumber(JsonNullable.of("ASN123"))
-                .originalFileName(JsonNullable.of("original.txt"))
+                .originalFileName(document.get(0).getOriginalFilename())
                 .archivedFileName(JsonNullable.of("archived.txt"))
                 .build();
 
@@ -91,33 +90,17 @@ public class ApiApiController implements ApiApi {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String jsonDocument = mapper.writeValueAsString(document1);
+            logger.info(jsonDocument);
             rabbitMQSenderService.sendDocumentMessage(jsonDocument);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
 
-        // Upload each document to MinIO
-        logger.info("uploading to MinIO");
-        for (MultipartFile file : document) {
-            try {
-                // Specify your MinIO bucket and object name
-                String bucketName = "mein-bucket";
-                String objectName = "object-name/" + file.getOriginalFilename();
-
-                // Upload the document to MinIO
-                minioConfig.minioClient().putObject(
-                        PutObjectArgs.builder()
-                                .bucket(bucketName)
-                                .object(objectName)
-                                .stream(file.getInputStream(), file.getSize(), -1)
-                                .contentType(file.getContentType())
-                                .build()
-                );
-            } catch (Exception ex) {
-                logger.error("Error uploading document to MinIO: {}", ex.getMessage());
-                ex.printStackTrace();
-                // Handle the exception (e.g., return an error response)
-            }
+        try{
+            minioService.save(document);
+        }
+        catch (Exception ex){
+            logger.error(ex);
         }
 
         return ResponseEntity.ok().build();
