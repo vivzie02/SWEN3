@@ -92,6 +92,7 @@ services:
       - SPRING_DATA_ELASTICSEARCH_CLUSTERNODES=elasticsearch:9200
     depends_on:
       - elasticsearch
+    restart: unless-stopped
     
 volumes:
   postgres_data:
